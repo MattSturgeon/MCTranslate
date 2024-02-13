@@ -1,17 +1,11 @@
 import dev.mattsturgeon.assets.Assets
 import dev.mattsturgeon.assets.MinecraftIndexedAssets
 import kotlinx.serialization.SerializationException
-import java.io.File
 import kotlin.test.*
 
 class MinecraftIndexedAssetsTest {
 
     private lateinit var simple1: Assets
-
-    /**
-     * @return a [File] pointing to the specified resource file, or `null`.
-     */
-    private fun resource(path: String): File? = this::class.java.getResource(path)?.run { File(toURI()) }
 
     @BeforeTest
     fun setup() {
