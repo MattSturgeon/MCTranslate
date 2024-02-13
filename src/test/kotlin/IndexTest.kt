@@ -1,8 +1,6 @@
 import dev.mattsturgeon.assets.Index
-import dev.mattsturgeon.assets.IndexedAssets
 import kotlinx.serialization.json.Json
 import org.intellij.lang.annotations.Language
-import java.io.File
 import kotlin.test.Test
 import kotlin.test.asserter
 
@@ -35,10 +33,5 @@ class IndexTest {
         val afZa = index.objects["minecraft/lang/af_za.json"]
         asserter.assertNotNull("Has af_za", afZa)
         asserter.assertEquals("Has af_za hash", "d6ecd3c70e0259c6b4246807c4b49efb80bd8aac", afZa?.hash)
-    }
-
-    @Test
-    fun `Some test`() {
-        IndexedAssets(File("foo"), "some index")
     }
 }

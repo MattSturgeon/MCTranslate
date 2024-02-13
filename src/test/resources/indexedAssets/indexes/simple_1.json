@@ -1,0 +1,16 @@
+{
+  "objects": {
+    "minecraft/lang/af_za.json": {
+      "hash": "a_simple1",
+      "size": 123
+    },
+    "minecraft/lang/ar_sa.json": {
+      "hash": "b_simple1",
+      "size": 456
+    },
+    "minecraft/lang/bad_lang.json": {
+      "hash": "c_simple1",
+      "size": 789
+    }
+  }
+}
