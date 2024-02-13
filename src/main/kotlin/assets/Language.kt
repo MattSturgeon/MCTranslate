@@ -1,14 +1,12 @@
 package dev.mattsturgeon.assets
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
-import java.io.File
-import java.util.Properties
+import java.io.Reader
+import java.util.*
 
 data class Language(val code: String, val translations: Map<String, String>) {
     companion object {
-        fun parse(file: File, name: String = file.name): Language {
+        fun parse(reader: Reader, name: String): Language {
             val lang: String
             val extension: String
 
@@ -21,20 +19,19 @@ data class Language(val code: String, val translations: Map<String, String>) {
             }
 
             val translations = when (extension) {
-                "json" -> decodeJsonFile(file)
-                "lang" -> decodePropertiesFile(file)
+                "json" -> decodeJsonFile(reader)
+                "lang" -> decodePropertiesFile(reader)
                 else -> throw IllegalArgumentException("""Cannot parse lang file with extension "$extension"!""")
             }
 
             return Language(lang, translations)
         }
 
-        @OptIn(ExperimentalSerializationApi::class)
-        private fun decodeJsonFile(file: File): Map<String, String> = Json.decodeFromStream(file.inputStream())
+        private fun decodeJsonFile(reader: Reader): Map<String, String> = Json.decodeFromString(reader.readText())
 
-        private fun decodePropertiesFile(file: File): Map<String, String> {
+        private fun decodePropertiesFile(reader: Reader): Map<String, String> {
             val props = Properties()
-            props.load(file.reader())
+            props.load(reader)
             return props.entries.associate { (key, value) -> Pair(key.toString(), value.toString()) }
         }
     }

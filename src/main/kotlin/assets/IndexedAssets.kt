@@ -26,7 +26,7 @@ class IndexedAssets(private val assetsDir: File, assetIndex: String) : Assets {
                 parts.size == 3 && parts[1] == "lang" && parts[2].substringBeforeLast('.') == lang
             }
             .map { (path, obj) ->
-                Language.parse(file = obj.file(assetsDir), name = path.substringAfterLast('/'))
+                Language.parse(reader = obj.file(assetsDir).reader(), name = path.substringAfterLast('/'))
             }
             .map { it.translations }
             .reduceOrNull(Map<String, String>::plus)
