@@ -1,10 +1,10 @@
 import dev.mattsturgeon.assets.Assets
-import dev.mattsturgeon.assets.IndexedAssets
+import dev.mattsturgeon.assets.MinecraftIndexedAssets
 import kotlinx.serialization.SerializationException
 import java.io.File
 import kotlin.test.*
 
-class IndexedAssetsFunctionalTest {
+class MinecraftIndexedAssetsTest {
 
     private lateinit var simple1: Assets
 
@@ -16,7 +16,7 @@ class IndexedAssetsFunctionalTest {
     @BeforeTest
     fun setup() {
         val assetsDir = resource("indexedAssets")!!
-        simple1 = IndexedAssets(assetsDir, "simple_1")
+        simple1 = MinecraftIndexedAssets(assetsDir, "simple_1")
     }
 
     @Test
