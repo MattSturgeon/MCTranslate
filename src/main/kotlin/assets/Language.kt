@@ -6,7 +6,7 @@ import java.util.*
 
 data class Language(val code: String, val translations: Map<String, String>) {
     companion object {
-        fun parse(reader: Reader, name: String): Language {
+        fun parse(name: String, reader: Reader): Language {
             val lang: String
             val extension: String
 
