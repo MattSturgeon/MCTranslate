@@ -16,7 +16,7 @@ class IndexedAssets(private val assetsDir: File, assetIndex: String) : Assets {
     }
 
     private fun mcmetaFile() = index.objects["pack.mcmeta"]?.file(assetsDir)
-    override fun mcmeta() = mcmetaFile()?.let { Json.decodeFromStream<MCMeta>(it.inputStream()) }
+    override fun packMeta() = mcmetaFile()?.let { Json.decodeFromStream<PackMeta>(it.inputStream()) }
 
     override fun getLang(lang: String): Map<String, String>? {
         return index.objects

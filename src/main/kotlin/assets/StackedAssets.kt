@@ -2,9 +2,9 @@ package dev.mattsturgeon.assets
 
 internal class StackedAssets(internal vararg val children: Assets) : Assets {
 
-    override fun mcmeta() = children
-        .mapNotNull(Assets::mcmeta)
-        .reduceOrNull(MCMeta::plus)
+    override fun packMeta() = children
+        .mapNotNull(Assets::packMeta)
+        .reduceOrNull(PackMeta::plus)
 
     override fun getLang(lang: String) = children
         .mapNotNull { it.getLang(lang) }
