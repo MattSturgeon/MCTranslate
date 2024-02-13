@@ -9,7 +9,6 @@ import java.util.function.Supplier
 @OptIn(ExperimentalSerializationApi::class)
 class MinecraftIndexedAssets(assetsDir: File, assetIndex: String) : IndexedAssets(run {
     val indexFile = assetsDir.resolve("indexes").resolve("$assetIndex.json")
-    val index = Json.decodeFromStream<Index>(indexFile.inputStream())
-    index.objects.entries.associate { (path, obj) -> Pair(path, Supplier { obj.file(assetsDir).reader() }) }
+    val index = Json.decodeFromStream<MinecraftAssetIndex>(indexFile.inputStream())
+    index.objects.entries.associate { (path, obj) -> path to Supplier { assetsDir.asset(obj).reader() } }
 })
-

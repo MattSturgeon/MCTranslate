@@ -1,10 +1,10 @@
-import dev.mattsturgeon.assets.Index
+import dev.mattsturgeon.assets.MinecraftAssetIndex
 import kotlinx.serialization.json.Json
 import org.intellij.lang.annotations.Language
 import kotlin.test.Test
 import kotlin.test.asserter
 
-class IndexTest {
+class MinecraftAssetIndexTest {
     @Test
     fun `Serialize index`() {
         @Language("JSON") val json = """
@@ -26,7 +26,7 @@ class IndexTest {
             }
         """.trimIndent()
 
-        val index = Json.decodeFromString<Index>(json)
+        val index: MinecraftAssetIndex = Json.decodeFromString(json)
 
         asserter.assertEquals("Has 3 objects", 3, index.objects.size)
 
