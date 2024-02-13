@@ -15,7 +15,7 @@ data class Language(val code: String, val translations: Map<String, String>) {
                     throw IllegalArgumentException("Cannot parse lang file without extension!")
                 }
                 lang = name.substring(0, index)
-                extension = name.substring(index).lowercase()
+                extension = name.substring(index + 1).lowercase()
             }
 
             val translations = when (extension) {

@@ -7,11 +7,11 @@ import java.util.function.Supplier
 open class AbstractIndexedAssets(files: Map<String, Supplier<Reader>>) : Assets {
 
     // TODO store as a directory tree
-    private val store: Map<Array<String>, Supplier<Reader>> =
-        files.mapKeys { (key, _) -> key.split('/').toTypedArray() }
+    private val store: Map<List<String>, Supplier<Reader>> =
+        files.mapKeys { (key, _) -> key.split('/') }
 
     override fun packMeta() =
-        store[arrayOf("pack", "mcmeta")]?.let { Json.decodeFromString<PackMeta>(it.get().readText()) }
+        store[listOf("pack.mcmeta")]?.let { Json.decodeFromString<PackMeta>(it.get().readText()) }
 
     override fun getLang(lang: String): Map<String, String>? {
         return store.asSequence()
