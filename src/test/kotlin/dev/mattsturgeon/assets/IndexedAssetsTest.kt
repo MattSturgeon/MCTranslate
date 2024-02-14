@@ -1,4 +1,5 @@
-import dev.mattsturgeon.assets.Assets
+package dev.mattsturgeon.assets
+
 import kotlin.test.*
 
 class IndexedAssetsTest {

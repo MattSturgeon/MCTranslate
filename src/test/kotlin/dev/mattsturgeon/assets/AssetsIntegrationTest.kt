@@ -1,4 +1,6 @@
-import dev.mattsturgeon.assets.Assets
+package dev.mattsturgeon.assets
+
+import dev.mattsturgeon.testing.resource
 import kotlin.test.*
 
 class AssetsIntegrationTest {

@@ -1,3 +1,5 @@
+package dev.mattsturgeon.assets
+
 import dev.mattsturgeon.assets.IndexedAssets.*
 import kotlin.reflect.KClass
 import kotlin.test.BeforeTest

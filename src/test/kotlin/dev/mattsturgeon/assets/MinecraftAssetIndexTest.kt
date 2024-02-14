@@ -1,5 +1,5 @@
-import dev.mattsturgeon.assets.MinecraftAssetIndex
-import dev.mattsturgeon.assets.asset
+package dev.mattsturgeon.assets
+
 import kotlinx.serialization.json.Json
 import org.intellij.lang.annotations.Language
 import java.io.File

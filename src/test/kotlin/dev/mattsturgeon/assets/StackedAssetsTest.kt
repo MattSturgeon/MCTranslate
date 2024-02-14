@@ -1,5 +1,5 @@
-import dev.mattsturgeon.assets.Assets
-import dev.mattsturgeon.assets.StackedAssets
+package dev.mattsturgeon.assets
+
 import kotlin.test.*
 
 class StackedAssetsTest {

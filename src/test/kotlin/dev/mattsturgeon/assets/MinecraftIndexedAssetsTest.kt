@@ -1,5 +1,7 @@
-import dev.mattsturgeon.assets.Assets
+package dev.mattsturgeon.assets
+
 import kotlinx.serialization.SerializationException
+import dev.mattsturgeon.testing.resource
 import kotlin.test.*
 
 class MinecraftIndexedAssetsTest {
