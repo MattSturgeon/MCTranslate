@@ -49,10 +49,7 @@ open class IndexedAssets(index: Map<String, Supplier<Reader>>) : Assets {
 
         fun basename(): String = name.substringBeforeLast('.')
 
-        fun asPath(): String {
-            val parentPath = parent?.asPath()?.plus("/") ?: ""
-            return parentPath + name
-        }
+        fun asPath(): String = parent?.let { "${it.asPath()}/$name" } ?: name
     }
 
     internal data class FileNode(
