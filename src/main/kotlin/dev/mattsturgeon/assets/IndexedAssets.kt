@@ -1,5 +1,6 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.extensions.basename
 import kotlinx.serialization.json.Json
 import java.io.Reader
 import java.util.function.Supplier
@@ -38,7 +39,7 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
             .mapNotNull { it.getDirectory("lang") }
             // Then get all files matching the requested lang
             .flatMap { it.files }
-            .filter { lang == it.basename() }
+            .filter { lang == it.name.basename() }
             // And parse them using Language
             .map { Language.parse(it.name, it.supplier.get()) }
             .map { it.translations }
@@ -49,8 +50,6 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
     internal interface Node {
         val name: String
         val parent: Node?
-
-        fun basename(): String = name.substringBeforeLast('.')
 
         fun asPath(): String = parent?.let { "${it.asPath()}/$name" } ?: name
     }

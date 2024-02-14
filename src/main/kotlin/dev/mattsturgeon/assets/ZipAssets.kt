@@ -1,5 +1,6 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.extensions.basename
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -30,5 +31,3 @@ class ZipAssets(val archive: ZipFile) : Assets {
             .reduceOrNull(Map<String, String>::plus)
     }
 }
-
-private fun String.basename(): String = substringBeforeLast('.')

@@ -20,16 +20,6 @@ class IndexedAssetsNodeTest {
         "b" to Expected("/b", null, DirectoryNode::class)
     )
 
-    private val nameExpectations = listOf(
-        NameExpectation("some.name", "some", "name"),
-        NameExpectation("some.complex.name", "some.complex", "name"),
-        NameExpectation(
-            "qwaef9uh34,;.:gw3re8s7.hudaf\\sd£$\"RQ_.ext",
-            "qwaef9uh34,;.:gw3re8s7.hudaf\\sd£$\"RQ_",
-            "ext"
-        ),
-    )
-
     private lateinit var root: DirectoryNode
     private lateinit var simple: DirectoryNode
 
@@ -38,7 +28,6 @@ class IndexedAssetsNodeTest {
         // Create a tree from expectations
         root = createTree(expectations)
         simple = createTree(simpleExpectation)
-        nameExpectations.forEach { it.node = DirectoryNode(it.name) }
     }
 
     @Test
@@ -56,15 +45,6 @@ class IndexedAssetsNodeTest {
             println("Checking \"$key\" has path: ${expected.path} (${expected.type.simpleName})")
             val node = expected.node!!
             assertEquals(expected.path, node.asPath(), "$key has correct path \"${expected.path}\"")
-        }
-    }
-
-    @Test
-    fun `basename() works correctly`() {
-        nameExpectations.forEach { expectation ->
-            println("Checking basename can handle \"${expectation.name}\"")
-            val node = expectation.node!!
-            assertEquals(expectation.basename, node.basename())
         }
     }
 
@@ -105,13 +85,6 @@ class IndexedAssetsNodeTest {
         val path: String,
         val content: String?,
         val type: KClass<T>,
-        var node: Node? = null
-    )
-
-    private data class NameExpectation(
-        val name: String,
-        val basename: String,
-        val extension: String,
         var node: Node? = null
     )
 }
