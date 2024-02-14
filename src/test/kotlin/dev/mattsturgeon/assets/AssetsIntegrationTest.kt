@@ -13,6 +13,7 @@ class AssetsIntegrationTest {
     @BeforeTest
     fun setup() {
         simple = listOf(
+            Assets.fromMinecraftAssets(resource("integration/simpleAssets.indexed")!!, "simple"),
             Assets.fromDirectory(resource("integration/simpleAssets")!!),
             Assets.fromZipFile(resource("integration/simpleAssets.zip")!!)
         )

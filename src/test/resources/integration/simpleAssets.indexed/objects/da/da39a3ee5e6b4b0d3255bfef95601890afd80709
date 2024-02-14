@@ -1,0 +1,9 @@
+{
+  "languages": {
+    "en_us": {
+      "name": "English",
+      "region": "US",
+      "bidirectional": false
+    }
+  }
+}
