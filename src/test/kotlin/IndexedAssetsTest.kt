@@ -1,6 +1,4 @@
 import dev.mattsturgeon.assets.Assets
-import dev.mattsturgeon.assets.DummyAssets
-import org.intellij.lang.annotations.Language
 import kotlin.test.*
 
 class IndexedAssetsTest {
@@ -10,7 +8,7 @@ class IndexedAssetsTest {
 
     @BeforeTest
     fun setup() {
-        assetsWithPackMeta = DummyAssets(mapOf<String, @receiver:Language("JSON") String>(
+        assetsWithPackMeta = Assets.fromStrings(
             "pack.mcmeta" to """
                         {
                           "languages": {
@@ -27,15 +25,15 @@ class IndexedAssetsTest {
                           "some.key": "some value"
                         }
                     """.trimIndent()
-        ))
+        )
 
-        assetsWithoutPackMeta = DummyAssets(mapOf<String, @receiver:Language("JSON") String>(
+        assetsWithoutPackMeta = Assets.fromStrings(
             "minecraft/lang/en_us.json" to """
                         {
                           "some.key": "some value"
                         }
                     """.trimIndent()
-        ))
+        )
     }
 
     @Test

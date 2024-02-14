@@ -4,7 +4,10 @@ import kotlinx.serialization.json.Json
 import java.io.Reader
 import java.util.function.Supplier
 
-open class IndexedAssets(index: Map<String, Supplier<Reader>>) : Assets {
+class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
+
+    constructor(vararg pairs: Pair<String, Supplier<Reader>>) : this(pairs.asIterable())
+    constructor(index: Map<String, Supplier<Reader>>) : this(index.map { it.toPair() })
 
     /**
      * A virtual directory tree
@@ -13,7 +16,7 @@ open class IndexedAssets(index: Map<String, Supplier<Reader>>) : Assets {
 
     init {
         // Load index into a directory tree
-        index.forEach { (path, supplier) ->
+        pairs.forEach { (path, supplier) ->
             // Split path into steps
             val steps = path.split('/').filter(String::isNotEmpty)
 

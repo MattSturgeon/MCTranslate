@@ -1,5 +1,4 @@
 import dev.mattsturgeon.assets.Assets
-import dev.mattsturgeon.assets.MinecraftIndexedAssets
 import kotlinx.serialization.SerializationException
 import kotlin.test.*
 
@@ -10,7 +9,7 @@ class MinecraftIndexedAssetsTest {
     @BeforeTest
     fun setup() {
         val assetsDir = resource("indexedAssets")!!
-        simple1 = MinecraftIndexedAssets(assetsDir, "simple_1")
+        simple1 = Assets.fromMinecraftAssets(assetsDir, "simple_1")
     }
 
     @Test

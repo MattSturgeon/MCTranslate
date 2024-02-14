@@ -1,5 +1,4 @@
 import dev.mattsturgeon.assets.Assets
-import dev.mattsturgeon.assets.DummyAssets
 import dev.mattsturgeon.assets.StackedAssets
 import kotlin.test.*
 
@@ -10,14 +9,14 @@ class StackedAssetsTest {
 
     @BeforeTest
     fun setup() {
-        a = DummyAssets(mapOf(
+        a = Assets.fromStrings(
             "foo" to "Bar",
             "bar" to "Other"
-        ))
-        b = DummyAssets(mapOf(
+        )
+        b = Assets.fromStrings(
             "some" to "thing",
             "foo" to "duplicate path"
-        ))
+        )
     }
 
     @Test
