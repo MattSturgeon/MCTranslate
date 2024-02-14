@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
 import java.util.function.Supplier
+import java.util.zip.ZipFile
 
 interface Assets {
 
@@ -44,6 +45,11 @@ interface Assets {
                     path to Supplier { assetsDir.asset(obj).reader() }
                 })
         }
+
+        fun fromDirectory(file: File): Assets = DirAssets(file)
+
+        fun fromZipFile(file: File): Assets = ZipAssets(file)
+        fun fromZipFile(file: ZipFile): Assets = ZipAssets(file)
 
         /**
          * Build an [Assets] instance containing the specified content.
