@@ -27,20 +27,20 @@ import java.io.File
  * ```
  */
 @Serializable
-internal data class MinecraftAssetIndex(val objects: Map<String, AssetObject>) {
+data class MinecraftAssetIndex(val objects: Map<String, AssetObject>) {
     @Serializable
-    internal data class AssetObject(val hash: String, val size: ULong)
+    data class AssetObject(val hash: String, val size: ULong)
 }
 
 /**
  * Resolve the [asset object][MinecraftAssetIndex.AssetObject] treating this file as the root `assetsDir`.
  */
-internal fun File.asset(obj: MinecraftAssetIndex.AssetObject) = this.asset(obj.hash)
+fun File.asset(obj: MinecraftAssetIndex.AssetObject) = this.asset(obj.hash)
 
 /**
  * Resolve the asset object with the given `hash`, treating this file as the root `assetsDir`.
  */
-internal fun File.asset(hash: String) = this
+fun File.asset(hash: String) = this
     .resolve("objects")
     .resolve(hash.substring(0, 2))
     .resolve(hash)

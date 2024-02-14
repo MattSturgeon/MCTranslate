@@ -10,6 +10,15 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    register("indexer") {
+        compileClasspath += main.get().compileClasspath
+        runtimeClasspath += main.get().runtimeClasspath
+        dependencies.add(implementationConfigurationName, main.get().output)
+        dependencies.add(implementationConfigurationName, "com.github.ajalt.clikt:clikt:4.2.2")
+    }
+}
+
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     testImplementation(kotlin("test"))
