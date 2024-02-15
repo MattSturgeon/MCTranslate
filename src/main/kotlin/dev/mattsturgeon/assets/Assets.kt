@@ -39,11 +39,11 @@ interface Assets {
             val index = assetsDir.resolve("indexes").resolve("$assetIndex.json")
             return IndexedAssets(
                 Json.decodeFromStream<MinecraftAssetIndex>(index.inputStream())
-                .objects
-                .entries
-                .map { (path, obj) ->
-                    path to Supplier { assetsDir.asset(obj).reader() }
-                })
+                    .objects
+                    .entries
+                    .map { (path, obj) ->
+                        path to Supplier { assetsDir.asset(obj).reader() }
+                    })
         }
 
         fun fromDirectory(file: File): Assets = DirAssets(file)
