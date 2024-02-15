@@ -4,8 +4,10 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
+import java.io.Reader
 import java.util.function.Supplier
 import java.util.zip.ZipFile
+import kotlin.streams.asSequence
 
 interface Assets {
 
@@ -48,19 +50,24 @@ interface Assets {
 
         fun fromDirectory(file: File): Assets = DirAssets(file)
 
-        fun fromZipFile(file: File): Assets = ZipAssets(file)
-        fun fromZipFile(file: ZipFile): Assets = ZipAssets(file)
+        fun fromZipFile(file: File): Assets = fromZipFile(ZipFile(file))
+        fun fromZipFile(file: ZipFile): Assets =
+            IndexedAssets(file.stream()
+                .asSequence()
+                .map { entry ->
+                    entry.name to Supplier<Reader> { file.getInputStream(entry).reader() }
+                }
+                .asIterable())
 
         /**
          * Build an [Assets] instance containing the specified content.
          *
          * @param pairs pairs of `path` to `content`
          */
-        fun fromStrings(pairs: Iterable<Pair<String, String>>): IndexedAssets {
-            return IndexedAssets(pairs.map { (path, content) ->
+        fun fromStrings(pairs: Iterable<Pair<String, String>>): Assets = IndexedAssets(
+            pairs.map { (path, content) ->
                 path to Supplier { content.reader() }
             })
-        }
 
         /**
          * Build an [Assets] instance containing the specified content.
