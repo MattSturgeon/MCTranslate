@@ -1,13 +1,11 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.extensions.childDirectories
+import dev.mattsturgeon.extensions.childFiles
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.Reader
 import java.util.function.Supplier
-
-// These extension functions make getLang() much more readable
-private fun File.childFiles() = listFiles { file -> file.isFile } ?: emptyArray()
-private fun File.childDirectories() = listFiles { file -> file.isDirectory } ?: emptyArray()
 
 internal class FileAssets(private val assetsDir: File) : BaseAssets {
 
