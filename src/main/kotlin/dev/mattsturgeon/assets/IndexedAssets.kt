@@ -3,6 +3,7 @@ package dev.mattsturgeon.assets
 import dev.mattsturgeon.extensions.basename
 import kotlinx.serialization.json.Json
 import java.io.Reader
+import java.util.*
 import java.util.function.Supplier
 
 class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
@@ -60,9 +61,12 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
     internal data class DirectoryNode(
         override val name: String,
         override val parent: DirectoryNode? = null,
-        val directories: MutableList<DirectoryNode> = mutableListOf(),
-        val files: MutableList<FileNode> = mutableListOf()
     ) : Node {
+
+        // Sorted by name
+        val directories: MutableSet<DirectoryNode> = TreeSet { a, b -> a.name.compareTo(b.name) }
+        val files: MutableSet<FileNode> = TreeSet { a, b -> a.name.compareTo(b.name) }
+
         fun getFile(path: String) = getFile(path.split('/'))
 
         fun getFile(path: List<String>): FileNode? {
@@ -128,7 +132,6 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
 
             val node = FileNode(parent = this, name = name, supplier = supplier)
             files.add(node)
-            files.sortBy { it.name }
             return node
         }
 
@@ -145,7 +148,6 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
             // Otherwise create a new one
             val node = DirectoryNode(parent = this, name = name)
             directories.add(node)
-            directories.sortBy { it.name }
             return node
         }
 
