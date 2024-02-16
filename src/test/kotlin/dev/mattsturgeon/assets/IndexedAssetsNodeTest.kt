@@ -1,7 +1,8 @@
 package dev.mattsturgeon.assets
 
 import dev.mattsturgeon.assets.IndexedAssets.*
-import kotlin.reflect.KClass
+import java.io.Reader
+import java.util.function.Supplier
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -9,15 +10,13 @@ import kotlin.test.assertEquals
 class IndexedAssetsNodeTest {
 
     private val expectations = mapOf(
-        "root" to Expected("ROOT", null, DirectoryNode::class),
-        "file" to Expected("ROOT/some/path/down/to/file", "Some content", FileNode::class),
-        "directory" to Expected("ROOT/some/path/down/to", null, DirectoryNode::class)
+        "file" to Expected("ROOT/some/path/down/to/file", "Some content"),
+        "empty" to Expected("ROOT/some/path/down/empty")
     )
 
     private val simpleExpectation = mapOf(
-        "root" to Expected("", null, DirectoryNode::class),
-        "a" to Expected("/a", null, DirectoryNode::class),
-        "b" to Expected("/b", null, DirectoryNode::class)
+        "a" to Expected("/a"),
+        "b" to Expected("/b")
     )
 
     private lateinit var root: DirectoryNode
@@ -26,14 +25,14 @@ class IndexedAssetsNodeTest {
     @BeforeTest
     fun setup() {
         // Create a tree from expectations
-        root = createTree(expectations)
+        root = createTree(expectations, "ROOT")
         simple = createTree(simpleExpectation)
     }
 
     @Test
     fun `asPath() can handle simple nodes`() {
         simpleExpectation.entries.forEach { (key, expected) ->
-            println("Checking \"$key\" has path: ${expected.path} (${expected.type.simpleName})")
+            println("Checking \"$key\" has path: ${expected.path}")
             val node = expected.node!!
             assertEquals(expected.path, node.asPath(), "$key has correct path \"${expected.path}\"")
         }
@@ -42,49 +41,44 @@ class IndexedAssetsNodeTest {
     @Test
     fun `asPath() can handle nested nodes`() {
         expectations.entries.forEach { (key, expected) ->
-            println("Checking \"$key\" has path: ${expected.path} (${expected.type.simpleName})")
+            println("Checking \"$key\" has path: ${expected.path}")
             val node = expected.node!!
             assertEquals(expected.path, node.asPath(), "$key has correct path \"${expected.path}\"")
         }
+    }
+
+    @Test
+    fun `createTree works as expected`() {
+        val pairs = expectations.values.map { (path, content, node) ->
+            path.substringAfter('/') to Supplier<Reader> { content.reader() }
+        }
+
+        assertEquals(createTree(expectations), Node.createTree(pairs))
     }
 
     /**
      * Helper function to create a node tree from an expectations map.
      *
      * @param expectations the definition used to create the tree
-     * @param root Optionally supply a root node. Will be mutated.
-     * @return The root node of the tree. Points to the same object as [root].
+     * @param rootName Optionally supply a name for the root node.
+     * @return The root node of the tree.
      */
     private fun createTree(
-        expectations: Map<String, Expected<*>>,
-        root: DirectoryNode = run { DirectoryNode(expectations["root"]!!.path) }
+        expectations: Map<String, Expected>,
+        rootName: String = ""
     ): DirectoryNode {
-        // Do this manually to prevent the test being modified externally
+        val root = DirectoryNode(rootName)
+
         expectations.values.forEach { expected ->
-            // Creates a FileNode if content isn't null,
-            // otherwise creates a DirectoryNode
-
-            // Create branch node(s)
-            val dir = expected.path
-                .split('/') // Split path into steps
-                .drop(1) // Without "ROOT"
-                .dropLast(expected.content?.let { 1 } ?: 0) // Without filename
-                .fold(root) { dir, name -> dir.makeDirectory(name) }
-
-            // Create(?) and assign leaf node
-            expected.node = expected.content?.let { content ->
-                val name = expected.path.substringAfterLast('/')
-                dir.makeFile(name) { content.reader() }
-            } ?: dir
+            expected.node = root.put(expected.path.split('/').drop(1)) { expected.content.reader() }
         }
 
         return root
     }
 
-    private data class Expected<T : Node>(
+    private data class Expected(
         val path: String,
-        val content: String?,
-        val type: KClass<T>,
+        val content: String = "",
         var node: Node? = null
     )
 }

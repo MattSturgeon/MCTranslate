@@ -54,6 +54,7 @@ interface Assets {
         fun fromZipFile(file: ZipFile): Assets =
             IndexedAssets(file.stream()
                 .asSequence()
+                .filterNot { it.isDirectory }
                 .map { entry ->
                     entry.name to Supplier<Reader> { file.getInputStream(entry).reader() }
                 }

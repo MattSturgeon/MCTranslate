@@ -13,22 +13,9 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
     /**
      * A virtual directory tree
      */
-    private val root = DirectoryNode("")
+    private val root = Node.createTree(pairs)
 
-    init {
-        // Load index into a directory tree
-        pairs.forEach { (path, supplier) ->
-            // Split path into steps
-            val steps = path.split('/').filter(String::isNotEmpty)
-
-            // Follow path's steps down tree, then add the file as a leaf node
-            steps.dropLast(1)
-                .fold(root) { dir, name -> dir.makeDirectory(name) }
-                .makeFile(steps.last(), supplier)
-        }
-    }
-
-    override fun packMeta() = root.get("pack.mcmeta")?.let {
+    override fun packMeta() = root.getFile("pack.mcmeta")?.let {
         val text = it.supplier.get().readText()
         Json.decodeFromString<PackMeta>(text)
     }
@@ -52,6 +39,16 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
         val parent: Node?
 
         fun asPath(): String = parent?.let { "${it.asPath()}/$name" } ?: name
+
+        companion object {
+            fun createTree(pairs: Iterable<Pair<String, Supplier<Reader>>>): DirectoryNode {
+                val root = DirectoryNode("")
+                pairs.forEach { (path, supplier) ->
+                    root.put(path, supplier)
+                }
+                return root
+            }
+        }
     }
 
     internal data class FileNode(
@@ -66,44 +63,83 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
         val directories: MutableList<DirectoryNode> = mutableListOf(),
         val files: MutableList<FileNode> = mutableListOf()
     ) : Node {
-        fun get(vararg path: String): FileNode? {
-            return when (path.size) {
-                0 -> null
-                1 -> files.firstOrNull { it.name == path[0] }
-                else -> {
-                    val dirName = path.first()
-                    val subPath = path.drop(1).toTypedArray()
-                    directories.firstOrNull { it.name == dirName }?.get(*subPath)
-                }
+        fun getFile(path: String) = getFile(path.split('/'))
+
+        fun getFile(path: List<String>): FileNode? {
+            // Ignore empty path segments
+            val steps = path.dropWhile(String::isEmpty)
+            steps.ifEmpty { return null }
+
+            // End of path: get a file
+            steps.singleOrNull()?.let { name ->
+                return files.firstOrNull { it.name == name }
             }
+
+            // Recursively follow path into subdirectory
+            return directories.firstOrNull { it.name == steps.first() }?.getFile(steps.drop(1))
         }
 
-        fun getDirectory(vararg path: String): DirectoryNode? {
-            if (path.isEmpty()) {
-                return this
-            }
-            val dirName = path.first()
-            val subPath = path.drop(1).toTypedArray()
-            return directories.firstOrNull { it.name == dirName }?.getDirectory(*subPath)
+        fun getDirectory(path: String) = getDirectory(path.split('/'))
+
+        fun getDirectory(path: List<String>): DirectoryNode? {
+            // Ignore empty path segments
+            val steps = path.dropWhile(String::isEmpty)
+
+            // No path left: we've found the directory
+            steps.ifEmpty { return this }
+
+            // Recursively follow path
+            return directories.firstOrNull { it.name == steps.first() }?.getDirectory(steps.drop(1))
         }
 
-        fun makeDirectory(name: String): DirectoryNode {
-            val existing = directories.firstOrNull() { it.name == name }
-            return existing ?: run {
-                val node = DirectoryNode(parent = this, name = name)
-                directories.add(node)
-                node
+        fun put(path: String, supplier: Supplier<Reader>) = put(path.split('/'), supplier)
+
+        fun put(path: List<String>, supplier: Supplier<Reader>): FileNode {
+            // Ignore empty path segments
+            val steps = path.dropWhile(String::isEmpty)
+
+            steps.ifEmpty {
+                throw IllegalArgumentException("""Path is empty (or contains only empty segments): "${path.joinToString("/")}".""")
             }
+
+            // Base case: reached the end of the path
+            steps.singleOrNull()?.let {
+                return makeFileNode(it, supplier)
+            }
+
+            // Otherwise, recurse into a directory node
+            return makeDirectoryNode(steps.first()).put(steps.drop(1), supplier)
         }
 
-        fun makeFile(name: String, supplier: Supplier<Reader>): FileNode {
-            files.firstOrNull { it.name == name }?.run {
-                throw IllegalArgumentException("""Cannot add duplicate file "$name" to "${asPath()}".""")
+        private fun makeFileNode(name: String, supplier: Supplier<Reader>): FileNode {
+            files.firstOrNull { it.name == name }?.let {
+                throw IllegalArgumentException("""A file named "${it.asPath()}" already exists.""")
+            }
+
+            directories.firstOrNull { it.name == name }?.let {
+                throw IllegalArgumentException("""A directory named "${it.asPath()}" already exists.""")
             }
 
             val node = FileNode(parent = this, name = name, supplier = supplier)
             files.add(node)
             return node
         }
+
+        private fun makeDirectoryNode(name: String): DirectoryNode {
+            files.firstOrNull { it.name == name }?.let {
+                throw IllegalArgumentException("""A file named "${it.asPath()}" already exists.""")
+            }
+
+            // Return the existing node if one exists
+            directories.firstOrNull() { it.name == name }?.let {
+                return it
+            }
+
+            // Otherwise create a new one
+            val node = DirectoryNode(parent = this, name = name)
+            directories.add(node)
+            return node
+        }
+
     }
 }
