@@ -92,6 +92,12 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
             return directories.firstOrNull { it.name == steps.first() }?.getDirectory(steps.drop(1))
         }
 
+        fun allPaths(): List<String> {
+            val d = directories.flatMap { it.allPaths() }
+            val f = files.map { it.asPath() }
+            return d + f
+        }
+
         fun put(path: String, supplier: Supplier<Reader>) = put(path.split('/'), supplier)
 
         fun put(path: List<String>, supplier: Supplier<Reader>): FileNode {
@@ -122,6 +128,7 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
 
             val node = FileNode(parent = this, name = name, supplier = supplier)
             files.add(node)
+            files.sortBy { it.name }
             return node
         }
 
@@ -138,6 +145,7 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
             // Otherwise create a new one
             val node = DirectoryNode(parent = this, name = name)
             directories.add(node)
+            directories.sortBy { it.name }
             return node
         }
 

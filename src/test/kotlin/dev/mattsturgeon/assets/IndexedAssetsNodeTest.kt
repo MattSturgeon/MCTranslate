@@ -1,8 +1,11 @@
 package dev.mattsturgeon.assets
 
-import dev.mattsturgeon.assets.IndexedAssets.*
+import dev.mattsturgeon.assets.IndexedAssets.DirectoryNode
+import dev.mattsturgeon.assets.IndexedAssets.Node
 import java.io.Reader
+import java.io.Reader.nullReader
 import java.util.function.Supplier
+import kotlin.random.Random
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -48,13 +51,43 @@ class IndexedAssetsNodeTest {
     }
 
     @Test
-    fun `createTree works as expected`() {
+    fun `allPaths() matches input`() {
+        // Sorted dirs-first, then alphabetical
+        val paths = listOf(
+            "/a/b/z/x",
+            "/a/b/c",
+            "/a/b/f",
+            "/foo/bar/baz",
+            "/foo/sub/thing",
+            "/some/zoo/animal",
+            "/some/other",
+            "/some/xray",
+            "/aaa",
+            "/mmm",
+            "/path",
+            "/zzz",
+        )
+
+        val random = Random(10)
+        val unsorted = paths.sortedBy { random.nextInt(-1, 1) }
+        val node = createTree(unsorted)
+
+        assertEquals(paths, node.allPaths())
+    }
+
+    @Test
+    fun `createTree() works as expected`() {
         val pairs = expectations.values.map { (path, content, node) ->
             path.substringAfter('/') to Supplier<Reader> { content.reader() }
         }
 
-        assertEquals(createTree(expectations), Node.createTree(pairs))
+        val a = createTree(expectations)
+        val b = Node.createTree(pairs)
+
+        assertEquals(a.allPaths(), b.allPaths())
     }
+
+    private fun createTree(paths: Iterable<String>) = Node.createTree(paths.map { it to Supplier { nullReader() } })
 
     /**
      * Helper function to create a node tree from an expectations map.
