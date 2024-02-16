@@ -29,13 +29,13 @@ interface Assets {
          *
          * If an [assetIndex] is specified, then an [IndexedAssets] is constructed using the Minecraft asset index file.
          *
-         * Otherwise, [DirAssets] is used.
+         * Otherwise, [FileAssets] is used.
          */
         @JvmOverloads
         @OptIn(ExperimentalSerializationApi::class)
         fun fromMinecraftAssets(assetsDir: File, assetIndex: String? = null): Assets {
             if (assetIndex == null) {
-                return DirAssets(assetsDir)
+                return FileAssets(assetsDir)
             }
 
             val index = assetsDir.resolve("indexes").resolve("$assetIndex.json")
@@ -48,7 +48,7 @@ interface Assets {
                     })
         }
 
-        fun fromDirectory(file: File): Assets = DirAssets(file)
+        fun fromDirectory(file: File): Assets = FileAssets(file)
 
         fun fromZipFile(file: File): Assets = fromZipFile(ZipFile(file))
         fun fromZipFile(file: ZipFile): Assets =

@@ -1,12 +1,10 @@
 package dev.mattsturgeon.assets
 
-import dev.mattsturgeon.extensions.basename
-import kotlinx.serialization.json.Json
 import java.io.Reader
 import java.util.*
 import java.util.function.Supplier
 
-class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
+internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : BaseAssets {
 
     constructor(vararg pairs: Pair<String, Supplier<Reader>>) : this(pairs.asIterable())
     constructor(index: Map<String, Supplier<Reader>>) : this(index.map { it.toPair() })
@@ -16,23 +14,18 @@ class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : Assets {
      */
     private val root = Node.createTree(pairs)
 
-    override fun packMeta() = root.getFile("pack.mcmeta")?.let {
-        val text = it.supplier.get().readText()
-        Json.decodeFromString<PackMeta>(text)
+    override fun getPackMetaFile(): Reader? {
+        return root.getFile("pack.mcmeta")?.supplier?.get()
     }
 
-    override fun getLang(lang: String): Map<String, String>? {
+    override fun getLangFiles(): Iterable<Pair<String, Supplier<Reader>>> {
+        // Search all top-level dirs for "lang" sub-dirs
+        // then return all files in the "lang" dirs
         return root.directories.asSequence()
-            // Search all top-level dirs for "lang" sub-dirs
             .mapNotNull { it.getDirectory("lang") }
-            // Then get all files matching the requested lang
             .flatMap { it.files }
-            .filter { lang == it.name.basename() }
-            // And parse them using Language
-            .map { Language.parse(it.name, it.supplier.get()) }
-            .map { it.translations }
-            // Finally, combine all parsed files into one Map
-            .reduceOrNull(Map<String, String>::plus)
+            .map { it.name to it.supplier }
+            .asIterable()
     }
 
     internal interface Node {
