@@ -102,20 +102,24 @@ internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : 
         fun put(path: String, supplier: Supplier<Reader>) = put(path.split('/'), supplier)
 
         fun put(path: List<String>, supplier: Supplier<Reader>): FileNode {
-            // Ignore empty path segments
-            val steps = path.dropWhile(String::isEmpty)
-
-            steps.ifEmpty {
-                throw IllegalArgumentException("""Path is empty (or contains only empty segments): "${path.joinToString("/")}".""")
+            // Get current & next steps
+            // Skipping empty steps
+            val name: String
+            val remaining: List<String>
+            path.dropWhile(String::isEmpty).run {
+                name = first()
+                remaining = drop(1).dropWhile(String::isEmpty)
             }
 
-            // Base case: reached the end of the path
-            steps.singleOrNull()?.let {
-                return makeFileNode(it, supplier)
+            name.ifEmpty {
+                throw IllegalArgumentException("""Path is empty: "${path.joinToString("/")}".""")
             }
 
-            // Otherwise, recurse into a directory node
-            return makeDirectoryNode(steps.first()).put(steps.drop(1), supplier)
+            // End of path
+            remaining.ifEmpty { return makeFileNode(name, supplier) }
+
+            // Follow path steps recursively
+            return makeDirectoryNode(name).put(remaining, supplier)
         }
 
         private fun makeFileNode(name: String, supplier: Supplier<Reader>): FileNode {

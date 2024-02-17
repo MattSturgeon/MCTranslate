@@ -2,6 +2,9 @@ package dev.mattsturgeon.assets
 
 import dev.mattsturgeon.assets.IndexedAssets.DirectoryNode
 import dev.mattsturgeon.assets.IndexedAssets.Node
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.DynamicTest.dynamicTest
+import org.junit.jupiter.api.TestFactory
 import java.io.Reader
 import java.io.Reader.nullReader
 import java.util.function.Supplier
@@ -47,6 +50,23 @@ class IndexedAssetsNodeTest {
             println("Checking \"$key\" has path: ${expected.path}")
             val node = expected.node!!
             assertEquals(expected.path, node.asPath(), "$key has correct path \"${expected.path}\"")
+        }
+    }
+
+    @TestFactory
+    fun `put supports trailing slashes`(): List<DynamicTest> {
+        val expectations = mapOf(
+            "/some/file" to "/some/file/",
+            "/foo/bar/baz" to "//foo//bar//baz//",
+            "/extreme" to "/extreme/////////////",
+        )
+
+        return expectations.map { (expect, input) ->
+            dynamicTest("Handles \"$input\"") {
+                val node = DirectoryNode("")
+                node.put(input) { nullReader() }
+                assertEquals(listOf(expect), node.allPaths())
+            }
         }
     }
 
