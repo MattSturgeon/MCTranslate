@@ -21,9 +21,9 @@ internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : 
     override fun getLangFiles(): Iterable<Pair<String, Supplier<Reader>>> {
         // Search all top-level dirs for "lang" sub-dirs
         // then return all files in the "lang" dirs
-        return root.directories.asSequence()
+        return root.listDirectories().asSequence()
             .mapNotNull { it.getDirectory("lang") }
-            .flatMap { it.files }
+            .flatMap { it.listFiles().asSequence() }
             .map { it.name to it.supplier }
             .asIterable()
     }
@@ -56,24 +56,22 @@ internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : 
         override val parent: DirectoryNode? = null,
     ) : Node {
 
-        // Sorted by name
-        val directories: MutableSet<DirectoryNode> = TreeSet { a, b -> a.name.compareTo(b.name) }
-        val files: MutableSet<FileNode> = TreeSet { a, b -> a.name.compareTo(b.name) }
+        // Indexed & sorted by name
+        private val directories: MutableMap<String, DirectoryNode> = TreeMap()
+        private val files: MutableMap<String, FileNode> = TreeMap()
 
         fun getFile(path: String) = getFile(path.split('/'))
 
         fun getFile(path: List<String>): FileNode? {
             // Ignore empty path segments
             val steps = path.dropWhile(String::isEmpty)
+
+            // End of path
             steps.ifEmpty { return null }
+            steps.singleOrNull()?.let { return files[it] }
 
-            // End of path: get a file
-            steps.singleOrNull()?.let { name ->
-                return files.firstOrNull { it.name == name }
-            }
-
-            // Recursively follow path into subdirectory
-            return directories.firstOrNull { it.name == steps.first() }?.getFile(steps.drop(1))
+            // Follow path steps recursively
+            return directories[steps.first()]?.getFile(steps.drop(1))
         }
 
         fun getDirectory(path: String) = getDirectory(path.split('/'))
@@ -82,16 +80,22 @@ internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : 
             // Ignore empty path segments
             val steps = path.dropWhile(String::isEmpty)
 
-            // No path left: we've found the directory
+            // End of path
             steps.ifEmpty { return this }
 
-            // Recursively follow path
-            return directories.firstOrNull { it.name == steps.first() }?.getDirectory(steps.drop(1))
+            // Follow path steps recursively
+            return directories[steps.first()]?.getDirectory(steps.drop(1))
         }
 
+        fun listFiles() = files.values.toList()
+
+        fun listDirectories() = directories.values.toList()
+
+        fun listChildren() = listDirectories() + listFiles()
+
         fun allPaths(): List<String> {
-            val d = directories.flatMap { it.allPaths() }
-            val f = files.map { it.asPath() }
+            val d = listDirectories().flatMap { it.allPaths() }
+            val f = listFiles().map { it.asPath() }
             return d + f
         }
 
@@ -115,33 +119,27 @@ internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : 
         }
 
         private fun makeFileNode(name: String, supplier: Supplier<Reader>): FileNode {
-            files.firstOrNull { it.name == name }?.let {
-                throw IllegalArgumentException("""A file named "${it.asPath()}" already exists.""")
+            directories[name]?.run {
+                throw IllegalArgumentException("""A directory named "${asPath()}" already exists.""")
             }
 
-            directories.firstOrNull { it.name == name }?.let {
-                throw IllegalArgumentException("""A directory named "${it.asPath()}" already exists.""")
-            }
+            return files.compute(name) { _, value ->
+                value?.run {
+                    throw IllegalArgumentException("""A file named "${asPath()}" already exists.""")
+                }
 
-            val node = FileNode(parent = this, name = name, supplier = supplier)
-            files.add(node)
-            return node
+                FileNode(parent = this, name = name, supplier = supplier)
+            }!!
         }
 
         private fun makeDirectoryNode(name: String): DirectoryNode {
-            files.firstOrNull { it.name == name }?.let {
-                throw IllegalArgumentException("""A file named "${it.asPath()}" already exists.""")
+            files[name]?.run {
+                throw IllegalArgumentException("""A file named "${asPath()}" already exists.""")
             }
 
-            // Return the existing node if one exists
-            directories.firstOrNull() { it.name == name }?.let {
-                return it
+            return directories.computeIfAbsent(name) {
+                DirectoryNode(parent = this, name = name)
             }
-
-            // Otherwise create a new one
-            val node = DirectoryNode(parent = this, name = name)
-            directories.add(node)
-            return node
         }
 
     }
