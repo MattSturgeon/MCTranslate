@@ -14,8 +14,6 @@ sourceSets {
     register("indexer") {
         compileClasspath += main.get().compileClasspath
         runtimeClasspath += main.get().runtimeClasspath
-        dependencies.add(implementationConfigurationName, main.get().output)
-        dependencies.add(implementationConfigurationName, "com.github.ajalt.clikt:clikt:4.2.2")
     }
     register("functional") {
         compileClasspath += test.get().compileClasspath
@@ -23,12 +21,18 @@ sourceSets {
     }
 }
 
+val indexerImplementation: Configuration by configurations.getting
+
 val functionalImplementation: Configuration by configurations.getting {
     extendsFrom(configurations.testImplementation.get())
 }
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
+    indexerImplementation(sourceSets.main.get().output)
+    indexerImplementation("com.github.ajalt.clikt:clikt:4.2.2")
+
     testImplementation(kotlin("test"))
     functionalImplementation(gradleTestKit())
 }
