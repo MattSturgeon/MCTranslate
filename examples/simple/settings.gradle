@@ -1,0 +1,6 @@
+
+rootProject.name = "simple-example"
+
+// Include mc-translate from composite build
+// Remove this line if you're using this example as a template
+includeBuild "../../"

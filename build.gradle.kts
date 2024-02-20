@@ -17,15 +17,38 @@ sourceSets {
         dependencies.add(implementationConfigurationName, main.get().output)
         dependencies.add(implementationConfigurationName, "com.github.ajalt.clikt:clikt:4.2.2")
     }
+    register("functional") {
+        compileClasspath += test.get().compileClasspath
+        runtimeClasspath += test.get().runtimeClasspath
+    }
+}
+
+val functionalImplementation: Configuration by configurations.getting {
+    extendsFrom(configurations.testImplementation.get())
 }
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     testImplementation(kotlin("test"))
+    functionalImplementation(gradleTestKit())
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+val functionalTest by tasks.registering(Test::class) {
+    description = "Runs the functional test suite."
+    group = "verification"
+
+    testClassesDirs = sourceSets["functional"].output.classesDirs
+    classpath = sourceSets["functional"].runtimeClasspath
+    shouldRunAfter("test")
+    useJUnitPlatform()
+}
+
+tasks.check {
+    dependsOn(functionalTest)
 }
 
 tasks.wrapper {
