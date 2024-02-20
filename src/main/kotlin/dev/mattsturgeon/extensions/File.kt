@@ -9,12 +9,12 @@ fun File.childDirectories() = listFiles { file -> file.isDirectory } ?: emptyArr
 /**
  * Resolve the [asset object][AssetObject] treating this file as the root `assetsDir`.
  */
-internal fun File.asset(obj: AssetObject) = this.asset(obj.hash)
+fun File.asset(obj: AssetObject) = this.asset(obj.hash)
 
 /**
  * Resolve the asset object with the given `hash`, treating this file as the root `assetsDir`.
  */
-internal fun File.asset(hash: String) = this
+fun File.asset(hash: String) = this
     .resolve("objects")
     .resolve(hash.substring(0, 2))
     .resolve(hash)
