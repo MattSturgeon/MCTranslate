@@ -1,0 +1,16 @@
+pluginManagement {
+	repositories {
+		maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
+		}
+		mavenCentral()
+		gradlePluginPortal()
+	}
+}
+
+rootProject.name = "fabric-loom-example"
+
+// Include mc-translate from composite build
+// Remove this line if you're using this example as a template
+includeBuild "../../"
