@@ -1,4 +1,4 @@
-package dev.mattsturgeon.assets
+package dev.mattsturgeon.dev.mattsturgeon.lang
 
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.Translations
 import kotlinx.serialization.json.Json

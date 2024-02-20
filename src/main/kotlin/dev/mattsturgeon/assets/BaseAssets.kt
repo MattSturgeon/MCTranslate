@@ -1,5 +1,6 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.dev.mattsturgeon.lang.Language
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.Translations
 import dev.mattsturgeon.extensions.basename
