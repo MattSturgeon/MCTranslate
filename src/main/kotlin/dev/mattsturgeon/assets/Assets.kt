@@ -50,6 +50,7 @@ interface Assets {
          *
          * Otherwise, [FileAssets] is used.
          */
+        @JvmStatic
         @JvmOverloads
         @OptIn(ExperimentalSerializationApi::class)
         fun fromMinecraftAssets(assetsDir: File, assetIndex: String? = null): Assets {
@@ -67,9 +68,13 @@ interface Assets {
                     })
         }
 
+        @JvmStatic
         fun fromDirectory(file: File): Assets = FileAssets(file)
 
+        @JvmStatic
         fun fromZipFile(file: File): Assets = fromZipFile(ZipFile(file))
+
+        @JvmStatic
         fun fromZipFile(file: ZipFile): Assets =
             IndexedAssets(file.stream()
                 .asSequence()
@@ -84,6 +89,7 @@ interface Assets {
          *
          * @param pairs pairs of `path` to `content`
          */
+        @JvmStatic
         fun fromStrings(pairs: Iterable<Pair<String, String>>): Assets = IndexedAssets(
             pairs.map { (path, content) ->
                 path to Supplier { content.reader() }
@@ -94,6 +100,7 @@ interface Assets {
          *
          * @param pairs pairs of `path` to `content`
          */
+        @JvmStatic
         fun fromStrings(vararg pairs: Pair<String, String>) = fromStrings(pairs.asIterable())
 
         /**
@@ -101,6 +108,7 @@ interface Assets {
          *
          * @param index map of `path` to `content`
          */
+        @JvmStatic
         fun fromStrings(index: Map<String, String>) = fromStrings(index.map { it.toPair() })
     }
 
