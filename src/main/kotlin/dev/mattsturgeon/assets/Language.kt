@@ -1,10 +1,11 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.Translations
 import kotlinx.serialization.json.Json
 import java.io.Reader
 import java.util.*
 
-data class Language(val code: String, val translations: Map<String, String>) {
+data class Language(val code: String, val translations: Translations) {
     companion object {
         fun parse(name: String, reader: Reader): Language {
             val lang: String
@@ -27,9 +28,9 @@ data class Language(val code: String, val translations: Map<String, String>) {
             return Language(lang, translations)
         }
 
-        private fun decodeJsonFile(reader: Reader): Map<String, String> = Json.decodeFromString(reader.readText())
+        private fun decodeJsonFile(reader: Reader): Translations = Json.decodeFromString(reader.readText())
 
-        private fun decodePropertiesFile(reader: Reader): Map<String, String> {
+        private fun decodePropertiesFile(reader: Reader): Translations {
             val props = Properties()
             props.load(reader)
             return props.entries.associate { (key, value) -> Pair(key.toString(), value.toString()) }

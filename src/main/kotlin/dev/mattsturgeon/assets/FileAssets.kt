@@ -21,7 +21,7 @@ internal class FileAssets(private val assetsDir: File) : BaseAssets {
         null
     }
 
-    override fun getLangFiles(): Iterable<Pair<String, Supplier<Reader>>> {
+    override fun getLangFiles(): Iterable<NamedSupplier> {
         return assetsDir.childDirectories()
             .asSequence()
             .map { it.resolve("lang") }

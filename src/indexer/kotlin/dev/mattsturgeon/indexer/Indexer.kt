@@ -8,8 +8,8 @@ import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
-import dev.mattsturgeon.assets.MinecraftAssetIndex
-import dev.mattsturgeon.assets.MinecraftAssetIndex.AssetObject
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.MinecraftAssetIndex
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.AssetObject
 import dev.mattsturgeon.assets.asset
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json

@@ -4,10 +4,10 @@ import java.io.Reader
 import java.util.*
 import java.util.function.Supplier
 
-internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : BaseAssets {
+internal class IndexedAssets(pairs: Iterable<NamedSupplier>) : BaseAssets {
 
-    constructor(vararg pairs: Pair<String, Supplier<Reader>>) : this(pairs.asIterable())
-    constructor(index: Map<String, Supplier<Reader>>) : this(index.map { it.toPair() })
+    constructor(vararg pairs: NamedSupplier) : this(pairs.asIterable())
+    constructor(index: NamedSuppliers) : this(index.map { it.toPair() })
 
     /**
      * A virtual directory tree
@@ -18,7 +18,7 @@ internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : 
         return root.getFile("pack.mcmeta")?.supplier?.get()
     }
 
-    override fun getLangFiles(): Iterable<Pair<String, Supplier<Reader>>> {
+    override fun getLangFiles(): Iterable<NamedSupplier> {
         // Search all top-level dirs for "lang" sub-dirs
         // then return all files in the "lang" dirs
         return root.listDirectories().asSequence()
@@ -35,7 +35,7 @@ internal class IndexedAssets(pairs: Iterable<Pair<String, Supplier<Reader>>>) : 
         fun asPath(): String = parent?.let { "${it.asPath()}/$name" } ?: name
 
         companion object {
-            fun createTree(pairs: Iterable<Pair<String, Supplier<Reader>>>): DirectoryNode {
+            fun createTree(pairs: Iterable<NamedSupplier>): DirectoryNode {
                 val root = DirectoryNode("")
                 pairs.forEach { (path, supplier) ->
                     root.put(path, supplier)

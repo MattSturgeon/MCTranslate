@@ -1,5 +1,10 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.MinecraftAssetIndex
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.Translations
+import dev.mattsturgeon.extensions.asset
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -13,7 +18,7 @@ interface Assets {
 
     fun packMeta(): PackMeta?
 
-    fun getLang(lang: String): Map<String, String>?
+    fun getLang(lang: String): Translations?
 
     fun getLangInfo(lang: String): LanguageInfo? = packMeta()?.languages?.get(lang)
 
