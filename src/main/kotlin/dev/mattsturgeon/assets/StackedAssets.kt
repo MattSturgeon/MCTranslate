@@ -1,7 +1,7 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.dev.mattsturgeon.lang.Translations
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.Translations
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.plus
 
 internal class StackedAssets(internal vararg val children: Assets) : Assets {
@@ -10,8 +10,8 @@ internal class StackedAssets(internal vararg val children: Assets) : Assets {
         .mapNotNull(Assets::packMeta)
         .reduceOrNull(PackMeta::plus)
 
-    override fun getLang(lang: String): Translations? = children
-        .mapNotNull { it.getLang(lang) }
+    override fun getTranslations(lang: String): Translations? = children
+        .mapNotNull { it.getTranslations(lang) }
         .reduceOrNull(Translations::plus)
 
     override fun plus(assets: Assets): Assets = when (assets) {

@@ -1,8 +1,8 @@
 package dev.mattsturgeon.assets
 
-import dev.mattsturgeon.dev.mattsturgeon.lang.Language
+import dev.mattsturgeon.dev.mattsturgeon.lang.Translations
+import dev.mattsturgeon.dev.mattsturgeon.lang.decodeTranslations
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.Translations
 import dev.mattsturgeon.extensions.basename
 import kotlinx.serialization.json.Json
 import java.io.Reader
@@ -19,12 +19,11 @@ internal interface BaseAssets : Assets {
 
     override fun packMeta() = getPackMetaFile()?.run { Json.decodeFromString<PackMeta>(readText()) }
 
-    override fun getLang(lang: String): Translations? {
+    override fun getTranslations(lang: String): Translations? {
         return getLangFiles()
             .filter { (name) -> lang == name.basename() }
             // And parse them using Language
-            .map { (name, supplier) -> Language.parse(name, supplier.get()) }
-            .map { it.translations }
+            .map { (name, supplier) -> decodeTranslations(name, supplier.get()) }
             // Finally, combine all parsed files into one Map
             .reduceOrNull(Translations::plus)
     }

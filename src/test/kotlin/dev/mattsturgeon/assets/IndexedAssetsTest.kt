@@ -58,7 +58,7 @@ class IndexedAssetsTest {
             "en_gb",
             "t_it"
         ).forEach {
-            assertNull(assetsWithPackMeta.getLang(it))
+            assertNull(assetsWithPackMeta.getTranslations(it))
         }
     }
 
@@ -68,19 +68,19 @@ class IndexedAssetsTest {
             "adsflshasdfouihasdf",
             "241liugwefs__43324kjn-asfkjn$.,easf''\"soaid6^5!£"
         ).forEach {
-            assertNull(assetsWithPackMeta.getLang(it))
+            assertNull(assetsWithPackMeta.getTranslations(it))
         }
     }
 
     @Test
     fun `Finds translations`() {
-        val translations = assetsWithPackMeta.getLang("en_us")
+        val translations = assetsWithPackMeta.getTranslations("en_us")
         assertNotNull(translations)
     }
 
     @Test
     fun `Finds correct translations`() {
-        val translations = assetsWithPackMeta.getLang("en_us")!!
+        val translations = assetsWithPackMeta.getTranslations("en_us")!!
         assertEquals("some value", translations["some.key"])
     }
 }

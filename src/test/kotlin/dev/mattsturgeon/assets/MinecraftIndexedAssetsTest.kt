@@ -22,27 +22,27 @@ class MinecraftIndexedAssetsTest {
     @Test
     fun `Doesn't find missing translations`() {
         sequenceOf("en_gb", "t_it").forEach {
-            assertNull(simple1.getLang(it))
+            assertNull(simple1.getTranslations(it))
         }
     }
 
     @Test
     fun `Finds translations`() {
         sequenceOf("af_za", "ar_sa").forEach {
-            assertNotNull(simple1.getLang(it))
+            assertNotNull(simple1.getTranslations(it))
         }
     }
 
     @Test
     fun `Finds correct translations`() {
-        assertEquals("some value", simple1.getLang("af_za")!!["some.key"])
-        assertEquals("some other value", simple1.getLang("ar_sa")!!["other.key"])
+        assertEquals("some value", simple1.getTranslations("af_za")!!["some.key"])
+        assertEquals("some other value", simple1.getTranslations("ar_sa")!!["other.key"])
     }
 
     @Test
     fun `Fails to parse invalid lang file`() {
         assertFailsWith(SerializationException::class) {
-            simple1.getLang("bad_lang")
+            simple1.getTranslations("bad_lang")
         }
     }
 }

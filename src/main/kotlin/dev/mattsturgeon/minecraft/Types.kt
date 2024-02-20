@@ -2,10 +2,6 @@ package dev.mattsturgeon.dev.mattsturgeon.minecraft
 
 import kotlinx.serialization.Serializable
 
-typealias Translation = Pair<String, String>
-
-typealias Translations = Map<String, String>
-
 /**
  * Represents Minecraft's assets _index_ file.
  *

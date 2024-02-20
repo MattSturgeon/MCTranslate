@@ -1,10 +1,12 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.dev.mattsturgeon.lang.Language
+import dev.mattsturgeon.dev.mattsturgeon.lang.Translations
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.MinecraftAssetIndex
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.Translations
 import dev.mattsturgeon.extensions.asset
+import dev.mattsturgeon.extensions.isLower
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -18,9 +20,21 @@ interface Assets {
 
     fun packMeta(): PackMeta?
 
-    fun getLang(lang: String): Translations?
+    fun getTranslations(lang: String): Translations?
 
     fun getLangInfo(lang: String): LanguageInfo? = packMeta()?.languages?.get(lang)
+
+    fun getLanguage(lang: String): Language? {
+        // Before 1.11 (16w32a), lang code was capitalized "en_US"
+        val en = if (lang.isLower()) "en_us" else "en_US"
+
+        return Language(
+            code = lang,
+            info = getLangInfo(lang),
+            translations = getTranslations(lang) ?: return null,
+            fallback = if (lang == en) null else getLanguage(en)
+        )
+    }
 
     operator fun plus(assets: Assets): Assets = when (assets) {
         is StackedAssets -> StackedAssets(this, *assets.children)

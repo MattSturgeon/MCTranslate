@@ -40,7 +40,7 @@ class AssetsIntegrationTest {
     @TestFactory
     fun `Finds languages that exist`() = simple.map {
         dynamicTest("${it::class.simpleName}.getLang(\"en_us\") is not null") {
-            assertNotNull(it.getLang("en_us"))
+            assertNotNull(it.getTranslations("en_us"))
         }
     }
 
@@ -52,7 +52,7 @@ class AssetsIntegrationTest {
             .flatMap { codes.map { lang -> it to lang } }
             .map { (it, lang) ->
                 dynamicTest("${it::class.simpleName}.getLang(\"${lang}\") fails gracefully") {
-                    assertNull(it.getLang(lang))
+                    assertNull(it.getTranslations(lang))
                 }
             }
     }
@@ -60,7 +60,7 @@ class AssetsIntegrationTest {
     @TestFactory
     fun `Finds correct translations`() = simple.map {
         dynamicTest("${it::class.simpleName}.getLang(\"en_us\") contains correct translations") {
-            val translations = it.getLang("en_us")!!
+            val translations = it.getTranslations("en_us")!!
             assertEquals("some value", translations["some.key"])
         }
     }
