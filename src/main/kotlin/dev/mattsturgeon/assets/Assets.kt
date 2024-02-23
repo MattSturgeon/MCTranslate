@@ -7,6 +7,7 @@ import dev.mattsturgeon.dev.mattsturgeon.minecraft.MinecraftAssetIndex
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
 import dev.mattsturgeon.extensions.asset
 import dev.mattsturgeon.extensions.isLower
+import dev.mattsturgeon.extensions.startsWith
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -72,17 +73,42 @@ interface Assets {
         fun fromDirectory(file: File): Assets = FileAssets(file)
 
         @JvmStatic
-        fun fromZipFile(file: File): Assets = fromZipFile(ZipFile(file))
+        fun fromZipFile(file: File, path: String = "assets"): Assets = fromZipFile(ZipFile(file), path)
 
+        /**
+         * Build an [Assets] instance using the content of the [ZipFile] provided.
+         *
+         * If [path] is non-empty, it specifies the path _within_ the zip file where the assets are located.
+         *
+         * [path] defaults to `"assets"`.
+         */
         @JvmStatic
-        fun fromZipFile(file: ZipFile): Assets =
-            IndexedAssets(file.stream()
+        fun fromZipFile(file: ZipFile, path: String = "assets"): Assets {
+            // We will filter for entries "in" this path
+            // We'll also drop the prefix from the indexed path
+            val prefix = path.split('/').filterNot(String::isEmpty)
+
+            return IndexedAssets(file.stream()
                 .asSequence()
                 .filterNot { it.isDirectory }
-                .map { entry ->
-                    entry.name to Supplier<Reader> { file.getInputStream(entry).reader() }
+                .map {
+                    // Split up entry path
+                    it.name.split('/').filterNot(String::isEmpty) to it
+                }
+                .filter { (path, _) ->
+                    // Filter out entries not in the specified path
+                    path.startsWith(prefix)
+                }
+                .map { (path, entry) ->
+                    // Drop the prefix from the start of the path
+                    path.drop(prefix.size).joinToString("/") to entry
+                }
+                .map { (path, entry) ->
+                    // Provide a supplier
+                    path to Supplier<Reader> { file.getInputStream(entry).reader() }
                 }
                 .asIterable())
+        }
 
         /**
          * Build an [Assets] instance containing the specified content.
