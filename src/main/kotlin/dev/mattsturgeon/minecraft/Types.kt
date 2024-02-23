@@ -1,5 +1,6 @@
 package dev.mattsturgeon.dev.mattsturgeon.minecraft
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -32,7 +33,7 @@ data class MinecraftAssetIndex(val objects: Map<String, AssetObject>)
 data class AssetObject(val hash: String, val size: ULong)
 
 @Serializable
-data class PackMeta(val languages: Map<String, LanguageInfo>)
+data class PackMeta(@SerialName("language") val languages: Map<String, LanguageInfo>)
 
 @Serializable
 data class LanguageInfo(
