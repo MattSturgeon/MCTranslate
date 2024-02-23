@@ -12,7 +12,7 @@ class IndexedAssetsTest {
         assetsWithPackMeta = Assets.fromStrings(
             "pack.mcmeta" to """
                         {
-                          "languages": {
+                          "language": {
                             "en_us": {
                               "name": "English",
                               "region": "US",
