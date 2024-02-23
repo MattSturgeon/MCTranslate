@@ -47,10 +47,7 @@ public class ExampleTranslator {
 
         // Each argument is optional, load using Assets factory methods if present
         List<Assets> assetsList = new ArrayList<>();
-        Optional.ofNullable(mcJar).ifPresent(it -> {
-            System.out.println("Loading jar file: " + it.getAbsolutePath());
-            assetsList.add(Assets.fromZipFile(it));
-        });
+        Optional.ofNullable(mcJar).ifPresent(it -> assetsList.add(Assets.fromZipFile(it)));
         Optional.ofNullable(assetDir).ifPresent(it -> assetsList.add(Assets.fromMinecraftAssets(it, assetIndex)));
         Optional.ofNullable(modAssetsDir).ifPresent(it -> assetsList.add(Assets.fromDirectory(it)));
 

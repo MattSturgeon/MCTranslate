@@ -73,6 +73,7 @@ interface Assets {
         fun fromDirectory(file: File): Assets = FileAssets(file)
 
         @JvmStatic
+        @JvmOverloads
         fun fromZipFile(file: File, path: String = "assets"): Assets = fromZipFile(ZipFile(file), path)
 
         /**
@@ -83,6 +84,7 @@ interface Assets {
          * [path] defaults to `"assets"`.
          */
         @JvmStatic
+        @JvmOverloads
         fun fromZipFile(file: ZipFile, path: String = "assets"): Assets {
             // We will filter for entries "in" this path
             // We'll also drop the prefix from the indexed path
