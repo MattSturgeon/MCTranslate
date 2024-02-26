@@ -1,7 +1,7 @@
 package dev.mattsturgeon.assets
 
-import dev.mattsturgeon.dev.mattsturgeon.lang.Translations
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
+import dev.mattsturgeon.lang.Translations
+import dev.mattsturgeon.minecraft.LanguageInfo
 
 internal class StackedAssets(internal vararg val children: Assets) : Assets {
 

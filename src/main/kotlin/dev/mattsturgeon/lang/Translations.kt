@@ -1,4 +1,4 @@
-package dev.mattsturgeon.dev.mattsturgeon.lang
+package dev.mattsturgeon.lang
 
 import kotlinx.serialization.json.Json
 import java.io.Reader

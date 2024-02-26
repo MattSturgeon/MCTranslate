@@ -1,11 +1,14 @@
 package dev.mattsturgeon.assets
 
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
+import dev.mattsturgeon.minecraft.LanguageInfo
 import dev.mattsturgeon.testing.resource
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class AssetsIntegrationTest {
 

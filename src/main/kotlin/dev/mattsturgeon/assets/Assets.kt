@@ -1,12 +1,12 @@
 package dev.mattsturgeon.assets
 
-import dev.mattsturgeon.dev.mattsturgeon.lang.Language
-import dev.mattsturgeon.dev.mattsturgeon.lang.Translations
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.MinecraftAssetIndex
 import dev.mattsturgeon.extensions.asset
 import dev.mattsturgeon.extensions.isLower
 import dev.mattsturgeon.extensions.startsWith
+import dev.mattsturgeon.lang.Language
+import dev.mattsturgeon.lang.Translations
+import dev.mattsturgeon.minecraft.LanguageInfo
+import dev.mattsturgeon.minecraft.MinecraftAssetIndex
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream

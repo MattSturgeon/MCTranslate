@@ -1,6 +1,6 @@
 package dev.mattsturgeon.extensions
 
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.AssetObject
+import dev.mattsturgeon.minecraft.AssetObject
 import java.io.File
 
 fun File.childFiles() = listFiles { file -> file.isFile } ?: emptyArray()

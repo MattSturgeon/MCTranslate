@@ -1,7 +1,7 @@
 package dev.mattsturgeon.assets
 
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.MinecraftAssetIndex
 import dev.mattsturgeon.extensions.asset
+import dev.mattsturgeon.minecraft.MinecraftAssetIndex
 import kotlinx.serialization.json.Json
 import org.intellij.lang.annotations.Language
 import java.io.File

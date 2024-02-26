@@ -1,8 +1,8 @@
 package com.example;
 
 import dev.mattsturgeon.assets.Assets;
-import dev.mattsturgeon.dev.mattsturgeon.lang.Language;
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo;
+import dev.mattsturgeon.lang.Language;
+import dev.mattsturgeon.minecraft.LanguageInfo;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;

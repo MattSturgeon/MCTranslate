@@ -1,10 +1,10 @@
 package dev.mattsturgeon.assets
 
-import dev.mattsturgeon.dev.mattsturgeon.lang.Translations
-import dev.mattsturgeon.dev.mattsturgeon.lang.decodeTranslations
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
 import dev.mattsturgeon.extensions.basename
+import dev.mattsturgeon.lang.Translations
+import dev.mattsturgeon.lang.decodeTranslations
+import dev.mattsturgeon.minecraft.LanguageInfo
+import dev.mattsturgeon.minecraft.PackMeta
 import kotlinx.serialization.json.Json
 import java.io.Reader
 

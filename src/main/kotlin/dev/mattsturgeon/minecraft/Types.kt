@@ -1,4 +1,4 @@
-package dev.mattsturgeon.dev.mattsturgeon.minecraft
+package dev.mattsturgeon.minecraft
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

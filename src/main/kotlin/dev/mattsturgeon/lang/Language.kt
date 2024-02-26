@@ -1,7 +1,6 @@
-package dev.mattsturgeon.dev.mattsturgeon.lang
+package dev.mattsturgeon.lang
 
-import dev.mattsturgeon.assets.Assets
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
+import dev.mattsturgeon.minecraft.LanguageInfo
 
 data class Language(
     val code: String,

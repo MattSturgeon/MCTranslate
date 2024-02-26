@@ -1,7 +1,7 @@
 package com.example;
 
 import dev.mattsturgeon.assets.Assets;
-import dev.mattsturgeon.dev.mattsturgeon.lang.Language;
+import dev.mattsturgeon.lang.Language;
 
 import java.io.File;
 
