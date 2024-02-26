@@ -2,7 +2,6 @@ package dev.mattsturgeon.assets
 
 import java.io.Reader
 import java.util.*
-import java.util.function.Supplier
 
 internal class IndexedAssets(pairs: Iterable<NamedSupplier>) : BaseAssets {
 
@@ -15,7 +14,7 @@ internal class IndexedAssets(pairs: Iterable<NamedSupplier>) : BaseAssets {
     private val root = Node.createTree(pairs)
 
     override fun getPackMetaFile(): Reader? {
-        return root.getFile("pack.mcmeta")?.supplier?.get()
+        return root.getFile("pack.mcmeta")?.run { supplier() }
     }
 
     override fun getLangFiles(): Iterable<NamedSupplier> {
@@ -48,7 +47,7 @@ internal class IndexedAssets(pairs: Iterable<NamedSupplier>) : BaseAssets {
     internal data class FileNode(
         override val name: String,
         override val parent: DirectoryNode,
-        val supplier: Supplier<Reader>
+        val supplier: () -> Reader
     ) : Node
 
     internal data class DirectoryNode(
@@ -99,9 +98,9 @@ internal class IndexedAssets(pairs: Iterable<NamedSupplier>) : BaseAssets {
             return d + f
         }
 
-        fun put(path: String, supplier: Supplier<Reader>) = put(path.split('/'), supplier)
+        fun put(path: String, supplier: () -> Reader) = put(path.split('/'), supplier)
 
-        fun put(path: List<String>, supplier: Supplier<Reader>): FileNode {
+        fun put(path: List<String>, supplier: () -> Reader): FileNode {
             // Get current & next steps
             // Skipping empty steps
             val name: String
@@ -122,7 +121,7 @@ internal class IndexedAssets(pairs: Iterable<NamedSupplier>) : BaseAssets {
             return makeDirectoryNode(name).put(remaining, supplier)
         }
 
-        private fun makeFileNode(name: String, supplier: Supplier<Reader>): FileNode {
+        private fun makeFileNode(name: String, supplier: () -> Reader): FileNode {
             directories[name]?.run {
                 throw IllegalArgumentException("""A directory named "${asPath()}" already exists.""")
             }

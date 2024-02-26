@@ -12,8 +12,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
-import java.io.Reader
-import java.util.function.Supplier
 import java.util.zip.ZipFile
 import kotlin.streams.asSequence
 
@@ -65,7 +63,7 @@ interface Assets {
                     .objects
                     .entries
                     .map { (path, obj) ->
-                        path to Supplier { assetsDir.asset(obj).reader() }
+                        path to { assetsDir.asset(obj).reader() }
                     })
         }
 
@@ -103,11 +101,7 @@ interface Assets {
                 }
                 .map { (path, entry) ->
                     // Drop the prefix from the start of the path
-                    path.drop(prefix.size).joinToString("/") to entry
-                }
-                .map { (path, entry) ->
-                    // Provide a supplier
-                    path to Supplier<Reader> { file.getInputStream(entry).reader() }
+                    path.drop(prefix.size).joinToString("/") to { file.getInputStream(entry).reader() }
                 }
                 .asIterable())
         }
@@ -120,7 +114,7 @@ interface Assets {
         @JvmStatic
         fun fromStrings(pairs: Iterable<Pair<String, String>>): Assets = IndexedAssets(
             pairs.map { (path, content) ->
-                path to Supplier { content.reader() }
+                path to { content.reader() }
             })
 
         /**

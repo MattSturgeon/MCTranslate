@@ -6,10 +6,9 @@ import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
 import dev.mattsturgeon.extensions.basename
 import kotlinx.serialization.json.Json
 import java.io.Reader
-import java.util.function.Supplier
 
-internal typealias NamedSupplier = Pair<String, Supplier<Reader>>
-internal typealias NamedSuppliers = Map<String, Supplier<Reader>>
+internal typealias NamedSupplier = Pair<String, () -> Reader>
+internal typealias NamedSuppliers = Map<String, () -> Reader>
 
 internal interface BaseAssets : Assets {
 
@@ -23,7 +22,7 @@ internal interface BaseAssets : Assets {
         return getLangFiles()
             .filter { (name) -> lang == name.basename() }
             // And parse them using Language
-            .map { (name, supplier) -> decodeTranslations(name, supplier.get()) }
+            .map { (name, supplier) -> decodeTranslations(name, supplier()) }
             // Finally, combine all parsed files into one Map
             .reduceOrNull(Translations::plus)
     }

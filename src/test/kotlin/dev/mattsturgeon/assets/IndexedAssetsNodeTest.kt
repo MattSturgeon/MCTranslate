@@ -5,9 +5,7 @@ import dev.mattsturgeon.assets.IndexedAssets.Node
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
-import java.io.Reader
 import java.io.Reader.nullReader
-import java.util.function.Supplier
 import kotlin.random.Random
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -98,7 +96,7 @@ class IndexedAssetsNodeTest {
     @Test
     fun `createTree() works as expected`() {
         val pairs = expectations.values.map { (path, content, node) ->
-            path.substringAfter('/') to Supplier<Reader> { content.reader() }
+            path.substringAfter('/') to { content.reader() }
         }
 
         val a = createTree(expectations)
@@ -107,7 +105,7 @@ class IndexedAssetsNodeTest {
         assertEquals(a.allPaths(), b.allPaths())
     }
 
-    private fun createTree(paths: Iterable<String>) = Node.createTree(paths.map { it to Supplier { nullReader() } })
+    private fun createTree(paths: Iterable<String>) = Node.createTree(paths.map { it to { nullReader() } })
 
     /**
      * Helper function to create a node tree from an expectations map.

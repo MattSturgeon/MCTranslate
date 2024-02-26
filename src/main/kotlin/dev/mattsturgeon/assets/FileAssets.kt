@@ -4,8 +4,6 @@ import dev.mattsturgeon.extensions.childDirectories
 import dev.mattsturgeon.extensions.childFiles
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.Reader
-import java.util.function.Supplier
 
 internal class FileAssets(private val assetsDir: File) : BaseAssets {
 
@@ -27,7 +25,7 @@ internal class FileAssets(private val assetsDir: File) : BaseAssets {
             .map { it.resolve("lang") }
             .filter { it.isDirectory }
             .flatMap { it.childFiles().asSequence() }
-            .map { it.name to Supplier<Reader> { it.reader() } }
+            .map { it.name to { it.reader() } }
             .asIterable()
     }
 }
