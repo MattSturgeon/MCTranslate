@@ -1,7 +1,7 @@
 package dev.mattsturgeon.assets
 
-import kotlinx.serialization.SerializationException
 import dev.mattsturgeon.testing.resource
+import kotlinx.serialization.SerializationException
 import kotlin.test.*
 
 class MinecraftIndexedAssetsTest {
@@ -12,11 +12,6 @@ class MinecraftIndexedAssetsTest {
     fun setup() {
         val assetsDir = resource("indexedAssets")!!
         simple1 = Assets.fromMinecraftAssets(assetsDir, "simple_1")
-    }
-
-    @Test
-    fun `Doesn't find pack mcmeta`() {
-        assertNull(simple1.packMeta(), "Doesn't have pack.mcmeta")
     }
 
     @Test

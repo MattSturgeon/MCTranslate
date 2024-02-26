@@ -4,7 +4,6 @@ import dev.mattsturgeon.dev.mattsturgeon.lang.Language
 import dev.mattsturgeon.dev.mattsturgeon.lang.Translations
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.MinecraftAssetIndex
-import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
 import dev.mattsturgeon.extensions.asset
 import dev.mattsturgeon.extensions.isLower
 import dev.mattsturgeon.extensions.startsWith
@@ -17,11 +16,9 @@ import kotlin.streams.asSequence
 
 interface Assets {
 
-    fun packMeta(): PackMeta?
-
     fun getTranslations(lang: String): Translations?
 
-    fun getLangInfo(lang: String): LanguageInfo? = packMeta()?.languages?.get(lang)
+    fun getLangInfo(lang: String): LanguageInfo?
 
     fun getLanguage(lang: String): Language? {
         // Before 1.11 (16w32a), lang code was capitalized "en_US"

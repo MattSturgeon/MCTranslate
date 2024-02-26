@@ -1,5 +1,6 @@
 package dev.mattsturgeon.assets
 
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
 import dev.mattsturgeon.testing.resource
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -20,20 +21,20 @@ class AssetsIntegrationTest {
     }
 
     @TestFactory
-    fun `Find pack mcmeta`() = simple.map {
-        dynamicTest("${it::class.simpleName}.packMeta() isn't null") {
-            assertNotNull(it.packMeta())
-        }
-    }
-
-    @TestFactory
-    fun `Pack mcmeta has correct entries`() = simple.map {
-        dynamicTest("${it::class.simpleName}.packMeta() has \"en_us\" entry") {
-            val languages = it.packMeta()?.languages!!
-            assertContains(languages, "en_us")
-            assertEquals(languages["en_us"]?.name, "English")
-            assertEquals(languages["en_us"]?.region, "US")
-            assertEquals(languages["en_us"]?.bidirectional, false)
+    fun `Finds language info in pack meta`(): List<DynamicTest> {
+        val expectations = mapOf(
+            "en_us" to LanguageInfo(
+                name = "English",
+                region = "US",
+                bidirectional = false
+            )
+        )
+        return simple.flatMap {
+            expectations.map { (lang, expected) ->
+                dynamicTest("""${it::class.simpleName}.getLangInfo("$lang") is correct""") {
+                    assertEquals(expected, it.getLangInfo(lang))
+                }
+            }
         }
     }
 

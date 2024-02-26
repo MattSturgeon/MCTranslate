@@ -2,6 +2,7 @@ package dev.mattsturgeon.assets
 
 import dev.mattsturgeon.dev.mattsturgeon.lang.Translations
 import dev.mattsturgeon.dev.mattsturgeon.lang.decodeTranslations
+import dev.mattsturgeon.dev.mattsturgeon.minecraft.LanguageInfo
 import dev.mattsturgeon.dev.mattsturgeon.minecraft.PackMeta
 import dev.mattsturgeon.extensions.basename
 import kotlinx.serialization.json.Json
@@ -16,7 +17,9 @@ internal interface BaseAssets : Assets {
 
     fun getPackMetaFile(): Reader?
 
-    override fun packMeta() = getPackMetaFile()?.run { Json.decodeFromString<PackMeta>(readText()) }
+    override fun getLangInfo(lang: String): LanguageInfo? = getPackMetaFile()
+        ?.run { Json.decodeFromString<PackMeta>(readText()) }
+        ?.run { languages[lang] }
 
     override fun getTranslations(lang: String): Translations? {
         return getLangFiles()
