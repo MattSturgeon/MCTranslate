@@ -33,13 +33,21 @@ data class MinecraftAssetIndex(val objects: Map<String, AssetObject>)
 data class AssetObject(val hash: String, val size: ULong)
 
 @Serializable
-data class PackMeta(@SerialName("language") val languages: Map<String, LanguageInfo>)
+internal data class PackMeta(@SerialName("language") val languages: Map<String, LanguageInfo>)
 
 @Serializable
 data class LanguageInfo(
-    val name: String,
-    val region: String,
-    val bidirectional: Boolean
-)
+    private val name: String?,
+    private val region: String?,
+    private val bidirectional: Boolean?
+) {
+    fun getName() = name ?: ""
+    fun getRegion() = region ?: ""
+    fun getBiDirectional() = bidirectional ?: false
 
-operator fun PackMeta.plus(other: PackMeta) = PackMeta(languages + other.languages)
+    operator fun plus(other: LanguageInfo) = LanguageInfo(
+        name = other.name ?: name,
+        region = other.region ?: region,
+        bidirectional = other.bidirectional ?: bidirectional
+    )
+}
