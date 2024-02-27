@@ -1,0 +1,12 @@
+{
+    "objects": {
+        "foo/lang/en_US.lang": {
+            "hash": "811aa540c9868ac64a9feee9d7b34fd5cff66e51",
+            "size": 20
+        },
+        "pack.mcmeta": {
+            "hash": "25258313ae3e057251063d6ce11ff7cf6f26b171",
+            "size": 121
+        }
+    }
+}

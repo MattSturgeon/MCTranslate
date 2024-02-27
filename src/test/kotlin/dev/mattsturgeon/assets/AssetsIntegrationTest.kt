@@ -19,12 +19,19 @@ class AssetsIntegrationTest {
     private val simpleIndexed = resource("integration/simpleAssets.indexed")!!
     private val simpleZip = makeZip(simpleDir, "assets")
 
+    private val legacyDir = resource("integration/legacyAssets")!!
+    private val legacyIndexed = resource("integration/legacyAssets.indexed")!!
+    private val legacyZip = makeZip(legacyDir, "assets")
+
     @BeforeTest
     fun setup() {
         simple = listOf(
             Assets.fromMinecraftAssets(simpleIndexed, "simple"),
             Assets.fromDirectory(simpleDir),
-            Assets.fromZipFile(simpleZip)
+            Assets.fromZipFile(simpleZip),
+            Assets.fromMinecraftAssets(legacyIndexed, "legacy"),
+            Assets.fromDirectory(legacyDir),
+            Assets.fromZipFile(legacyZip)
         )
     }
 

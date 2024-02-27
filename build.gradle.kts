@@ -62,7 +62,8 @@ tasks.register("createIndexedAssets") {
     dependsOn(sourceSets["indexer"].output)
 
     sequenceOf(
-        "src/test/resources/integration/simpleAssets" to "simple"
+        "src/test/resources/integration/simpleAssets" to "simple",
+        "src/test/resources/integration/legacyAssets" to "legacy",
     ).forEach { (dir, index) ->
         val input = layout.projectDirectory.dir(dir).asFile
         val output = input.resolveSibling("${input.name}.indexed")
