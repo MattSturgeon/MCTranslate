@@ -11,5 +11,3 @@ fun String.basename(): String = substringBeforeLast('.')
  * Returns the file extension, or an empty string.
  */
 fun String.extension(): String = substringAfterLast('.', "")
-
-fun String.isLower(): Boolean = toCharArray().none(Char::isUpperCase)

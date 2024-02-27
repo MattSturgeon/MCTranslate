@@ -54,10 +54,16 @@ class AssetsIntegrationTest {
     }
 
     @TestFactory
-    fun `Finds languages that exist`() = simple.map {
-        dynamicTest("${it::class.simpleName}.getLang(\"en_us\") is not null") {
-            assertNotNull(it.getTranslations("en_us"))
-        }
+    fun `Missing translations fail gracefully`(): List<DynamicTest> {
+        val codes = listOf("en_gb", "invalid", "asdofin428whq9wesad\$Rweq8\"23rq")
+
+        return simple // list of every `assets to lang` combination
+            .flatMap { codes.map { lang -> it to lang } }
+            .map { (it, lang) ->
+                dynamicTest("${it::class.simpleName}.getTranslations(\"${lang}\") fails gracefully") {
+                    assertNull(it.getTranslations(lang))
+                }
+            }
     }
 
     @TestFactory
@@ -67,17 +73,27 @@ class AssetsIntegrationTest {
         return simple // list of every `assets to lang` combination
             .flatMap { codes.map { lang -> it to lang } }
             .map { (it, lang) ->
-                dynamicTest("${it::class.simpleName}.getLang(\"${lang}\") fails gracefully") {
-                    assertNull(it.getTranslations(lang))
+                dynamicTest("${it::class.simpleName}.getLanguage(\"${lang}\") fails gracefully") {
+                    assertNull(it.getLanguage(lang))
                 }
             }
     }
 
     @TestFactory
-    fun `Finds correct translations`() = simple.map {
-        dynamicTest("${it::class.simpleName}.getLang(\"en_us\") contains correct translations") {
-            val translations = it.getTranslations("en_us")!!
+    fun `Finds simple translations via translations`() = simple.map {
+        dynamicTest("${it::class.simpleName}.getTranslations(\"en_us\") contains correct translations") {
+            val translations = it.getTranslations("en_us")
+            assertNotNull(translations)
             assertEquals("some value", translations["some.key"])
+        }
+    }
+
+    @TestFactory
+    fun `Finds simple translations via Language`() = simple.map {
+        dynamicTest("${it::class.simpleName}.getLanguage(\"en_us\") contains correct translations") {
+            val lang = it.getLanguage("en_us")
+            assertNotNull(lang)
+            assertEquals("some value", lang["some.key"])
         }
     }
 }

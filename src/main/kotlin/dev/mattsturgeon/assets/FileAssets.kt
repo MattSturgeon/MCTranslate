@@ -5,7 +5,7 @@ import dev.mattsturgeon.extensions.childFiles
 import java.io.File
 import java.io.FileNotFoundException
 
-internal class FileAssets(private val assetsDir: File) : BaseAssets {
+internal class FileAssets(private val assetsDir: File) : BaseAssets() {
 
     init {
         if (!assetsDir.isDirectory) {

@@ -3,7 +3,7 @@ package dev.mattsturgeon.assets
 import java.io.Reader
 import java.util.*
 
-internal class IndexedAssets(pairs: Iterable<NamedSupplier>) : BaseAssets {
+internal class IndexedAssets(pairs: Iterable<NamedSupplier>) : BaseAssets() {
 
     constructor(vararg pairs: NamedSupplier) : this(pairs.asIterable())
     constructor(index: NamedSuppliers) : this(index.map { it.toPair() })

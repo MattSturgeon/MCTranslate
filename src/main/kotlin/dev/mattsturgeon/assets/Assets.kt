@@ -1,7 +1,6 @@
 package dev.mattsturgeon.assets
 
 import dev.mattsturgeon.extensions.asset
-import dev.mattsturgeon.extensions.isLower
 import dev.mattsturgeon.extensions.startsWith
 import dev.mattsturgeon.lang.Language
 import dev.mattsturgeon.lang.Translations
@@ -20,16 +19,23 @@ interface Assets {
 
     fun getLangInfo(lang: String): LanguageInfo?
 
-    fun getLanguage(lang: String): Language? {
-        // Before 1.11 (16w32a), lang code was capitalized "en_US"
-        val en = if (lang.isLower()) "en_us" else "en_US"
+    fun getLanguage(lang: String): Language? = getLanguage(lang, "en_us")
 
-        return Language(
-            code = lang,
-            info = getLangInfo(lang),
-            translations = getTranslations(lang) ?: return null,
-            fallback = if (lang == en) null else getLanguage(en)
-        )
+    fun getLanguage(lang: String, fallback: String): Language? {
+        // Return early if lang is missing
+        // TODO consider if we should return fallback?
+        val translations = getTranslations(lang)
+            ?: return null
+
+        // Get fallback if it's different
+        // Case-insensitive to support legacy versions
+        val fb =
+            if (lang.equals(fallback, ignoreCase = true)) null
+            else getLanguage(fallback)
+
+        val info = getLangInfo(lang)
+
+        return Language(lang, info, translations, fb)
     }
 
     operator fun plus(assets: Assets): Assets = when (assets) {

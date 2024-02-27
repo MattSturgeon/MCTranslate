@@ -1,7 +1,10 @@
 package dev.mattsturgeon.minecraft
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import java.io.Reader
 
 /**
  * Represents Minecraft's assets _index_ file.
@@ -33,7 +36,7 @@ data class MinecraftAssetIndex(val objects: Map<String, AssetObject>)
 data class AssetObject(val hash: String, val size: ULong)
 
 @Serializable
-internal data class PackMeta(@SerialName("language") val languages: Map<String, LanguageInfo>)
+private data class PackMeta(@SerialName("language") val languages: Map<String, LanguageInfo>)
 
 @Serializable
 data class LanguageInfo(
@@ -50,4 +53,19 @@ data class LanguageInfo(
         region = other.region ?: region,
         bidirectional = other.bidirectional ?: bidirectional
     )
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+private val json = Json {
+    explicitNulls = false
+    ignoreUnknownKeys = true
+}
+
+/**
+ * Decode a `pack.mcmeta` [file][reader] and return the [languages][LanguageInfo] map with lowercase keys
+ */
+fun decodePackMeta(reader: Reader): Map<String, LanguageInfo> {
+    return json.decodeFromString<PackMeta>(reader.readText()).languages.mapKeys {
+        it.key.lowercase()
+    }
 }
