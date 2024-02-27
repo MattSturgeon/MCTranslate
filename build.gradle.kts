@@ -55,18 +55,30 @@ tasks.check {
     dependsOn(functionalTest)
 }
 
-val createIndexedAssets by tasks.registering(JavaExec::class) {
+tasks.register("createIndexedAssets") {
     group = "build setup"
     description = "Create indexed assets used for integration test"
 
-    val input = layout.projectDirectory.file("src/test/resources/integration/simpleAssets").asFile
-    val output = input.resolveSibling(input.name + ".indexed")
-    args(input.path, output.path, "--index", "simple")
+    dependsOn(sourceSets["indexer"].output)
 
-    classpath = sourceSets["indexer"].runtimeClasspath
-    mainClass = "dev.mattsturgeon.indexer.IndexerKt"
+    sequenceOf(
+        "src/test/resources/integration/simpleAssets" to "simple"
+    ).forEach { (dir, index) ->
+        val input = layout.projectDirectory.dir(dir).asFile
+        val output = input.resolveSibling("${input.name}.indexed")
 
-    doFirst { output.deleteRecursively() }
+        doFirst {
+            output.deleteRecursively()
+        }
+
+        doLast {
+            javaexec {
+                classpath = sourceSets["indexer"].runtimeClasspath
+                mainClass = "dev.mattsturgeon.indexer.IndexerKt"
+                args(input.path, output.path, "--index", index)
+            }
+        }
+    }
 }
 
 tasks.wrapper {
