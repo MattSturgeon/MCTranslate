@@ -1,6 +1,7 @@
 package dev.mattsturgeon.assets
 
 import dev.mattsturgeon.minecraft.LanguageInfo
+import dev.mattsturgeon.testing.makeZip
 import dev.mattsturgeon.testing.resource
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -12,14 +13,18 @@ import kotlin.test.assertNull
 
 class AssetsIntegrationTest {
 
-    private var simple = emptyList<Assets>()
+    private lateinit var simple: List<Assets>
+
+    private val simpleDir = resource("integration/simpleAssets")!!
+    private val simpleIndexed = resource("integration/simpleAssets.indexed")!!
+    private val simpleZip = makeZip(simpleDir, "assets")
 
     @BeforeTest
     fun setup() {
         simple = listOf(
-            Assets.fromMinecraftAssets(resource("integration/simpleAssets.indexed")!!, "simple"),
-            Assets.fromDirectory(resource("integration/simpleAssets")!!),
-            Assets.fromZipFile(resource("integration/simpleAssets.zip")!!)
+            Assets.fromMinecraftAssets(simpleIndexed, "simple"),
+            Assets.fromDirectory(simpleDir),
+            Assets.fromZipFile(simpleZip)
         )
     }
 
